@@ -285,6 +285,9 @@ a:hover {
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    contain: layout style;
 }
 
 .glass-card::before {
@@ -953,6 +956,11 @@ a:hover {
     display: flex;
     flex-direction: column;
     transform-style: preserve-3d;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    contain: layout style;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 550px;
 }
 
 .project-media {
@@ -961,6 +969,7 @@ a:hover {
     overflow: hidden;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     background: #090D13;
+    contain: paint;
 }
 
 .project-media img {
@@ -969,6 +978,9 @@ a:hover {
     object-fit: cover;
     object-position: top center;
     transition: transform var(--transition-slow);
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    image-rendering: auto;
 }
 
 .project-card:hover .project-media img {
