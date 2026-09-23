@@ -132,7 +132,192 @@ body {
     width: 0%;
     background: linear-gradient(90deg, #FFA500 0%, #FF8C00 35%, #58A6FF 70%, #A371F7 100%);
     box-shadow: 0 0 10px rgba(255, 165, 0, 0.7), 0 0 5px rgba(88, 166, 255, 0.5);
-    transition: width 0.05s ease-out;
+    transition: width 0.1s linear;
+}
+
+/* ==========================================================================
+   Custom Interactive Cyberpunk Glowing Cursor System
+   ========================================================================== */
+@media (hover: hover) and (pointer: fine) {
+    /* Hide native cursor on desktop to give way to custom glowing cursor */
+    *, *::before, *::after {
+        cursor: none !important;
+    }
+
+    /* Ambient Particle Sparkle Trail Canvas */
+    .custom-cursor-trail {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 99996;
+    }
+
+    /* Precision Glowing Core Dot */
+    .custom-cursor-dot {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 8px;
+        height: 8px;
+        background: radial-gradient(circle, #FFFFFF 20%, #FFA500 100%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99999;
+        transform: translate3d(-50%, -50%, 0);
+        transition: width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                    height 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                    background-color 0.2s ease,
+                    box-shadow 0.2s ease,
+                    opacity 0.25s ease,
+                    border-radius 0.2s ease;
+        box-shadow: 0 0 10px #FFA500, 0 0 20px rgba(255, 165, 0, 0.8), 0 0 35px rgba(255, 140, 0, 0.45);
+        will-change: transform;
+    }
+
+    /* Smooth Inertia Trailing Ring */
+    .custom-cursor-ring {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 38px;
+        height: 38px;
+        border: 1.5px solid rgba(255, 165, 0, 0.65);
+        background: radial-gradient(circle, rgba(255, 165, 0, 0.08) 0%, rgba(88, 166, 255, 0.03) 70%, transparent 100%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99998;
+        transform: translate3d(-50%, -50%, 0);
+        transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                    height 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.25s ease,
+                    background 0.25s ease,
+                    box-shadow 0.25s ease,
+                    border-radius 0.25s ease,
+                    opacity 0.25s ease;
+        box-shadow: 0 0 16px rgba(255, 165, 0, 0.28);
+        backdrop-filter: blur(1.5px);
+        -webkit-backdrop-filter: blur(1.5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        will-change: transform;
+    }
+
+    /* Inner Reticle / Mini Label */
+    .cursor-label {
+        font-family: 'Fira Code', monospace;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #FFA500;
+        opacity: 0;
+        transform: scale(0.6);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        user-select: none;
+        text-shadow: 0 0 8px rgba(255, 165, 0, 0.85);
+    }
+
+    /* Interactive Link / Button Hover State */
+    .custom-cursor-ring.cursor-hover {
+        width: 58px;
+        height: 58px;
+        border-color: rgba(255, 165, 0, 0.95);
+        background: rgba(255, 165, 0, 0.15);
+        box-shadow: 0 0 28px rgba(255, 165, 0, 0.5), inset 0 0 14px rgba(255, 165, 0, 0.2);
+    }
+
+    .custom-cursor-dot.cursor-hover {
+        width: 5px;
+        height: 5px;
+        background: #FFFFFF;
+        box-shadow: 0 0 14px #FFFFFF, 0 0 25px #FFA500;
+    }
+
+    /* Cyan / Blue Accent Interactive Hover (Live Links, Tech badges, etc.) */
+    .custom-cursor-ring.cursor-hover-blue {
+        width: 60px;
+        height: 60px;
+        border-color: rgba(88, 166, 255, 0.95);
+        background: rgba(88, 166, 255, 0.16);
+        box-shadow: 0 0 30px rgba(88, 166, 255, 0.55), inset 0 0 14px rgba(88, 166, 255, 0.22);
+    }
+
+    .custom-cursor-dot.cursor-hover-blue {
+        background: #58A6FF;
+        box-shadow: 0 0 14px #FFFFFF, 0 0 25px rgba(88, 166, 255, 0.9);
+    }
+
+    /* Project Cards / Showcase Media Hover (View mode) */
+    .custom-cursor-ring.cursor-hover-view {
+        width: 76px;
+        height: 76px;
+        border-color: rgba(255, 165, 0, 0.95);
+        background: rgba(15, 23, 42, 0.75);
+        box-shadow: 0 0 32px rgba(255, 165, 0, 0.5), inset 0 0 16px rgba(255, 165, 0, 0.25);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+
+    .custom-cursor-ring.cursor-hover-view .cursor-label {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .custom-cursor-dot.cursor-hover-view {
+        opacity: 0;
+    }
+
+    /* Text Input Focus / Hover State */
+    .custom-cursor-ring.cursor-hover-text {
+        width: 6px;
+        height: 28px;
+        border-radius: 3px;
+        border-color: rgba(255, 165, 0, 0.9);
+        background: rgba(255, 165, 0, 0.5);
+        box-shadow: 0 0 16px rgba(255, 165, 0, 0.8);
+    }
+
+    .custom-cursor-dot.cursor-hover-text {
+        opacity: 0;
+    }
+
+    /* Click / Active State */
+    .custom-cursor-ring.cursor-active {
+        width: 32px;
+        height: 32px;
+        border-color: #FFA500;
+        background: rgba(255, 165, 0, 0.38);
+        box-shadow: 0 0 30px rgba(255, 165, 0, 0.8), inset 0 0 15px rgba(255, 165, 0, 0.4);
+        transform: translate3d(-50%, -50%, 0) scale(0.85);
+    }
+
+    .custom-cursor-dot.cursor-active {
+        width: 12px;
+        height: 12px;
+        box-shadow: 0 0 20px #FFFFFF, 0 0 35px #FFA500;
+    }
+
+    /* Hidden State (outside viewport / blur) */
+    .custom-cursor-dot.cursor-hidden,
+    .custom-cursor-ring.cursor-hidden,
+    .custom-cursor-trail.cursor-hidden {
+        opacity: 0 !important;
+    }
+}
+
+/* Touch & Mobile Devices fallback */
+@media (hover: none) or (pointer: coarse) {
+    .custom-cursor-dot,
+    .custom-cursor-ring,
+    .custom-cursor-trail {
+        display: none !important;
+    }
 }
 
 /* Custom Scrollbar */

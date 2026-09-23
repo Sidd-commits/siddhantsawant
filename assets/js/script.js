@@ -7,6 +7,7 @@
 let lenis = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    initCustomCursor();
     initSmoothScroll();
     initTypewriter();
     initNavbar();
@@ -563,6 +564,237 @@ function initBackToTop() {
                 top: 0,
                 behavior: 'smooth'
             });
+        }
+    });
+}
+
+/* ==========================================================================
+   11. Interactive Cyberpunk Glowing Custom Cursor System
+   ========================================================================== */
+function initCustomCursor() {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    const cursorDot = document.getElementById('cursorDot');
+    const cursorRing = document.getElementById('cursorRing');
+    const cursorLabel = document.getElementById('cursorLabel');
+    const canvas = document.getElementById('cursorTrail');
+
+    if (!cursorDot || !cursorRing) return;
+
+    let mouseX = -100;
+    let mouseY = -100;
+    let ringX = -100;
+    let ringY = -100;
+    let isVisible = false;
+    let isBlueMode = false;
+    let isViewMode = false;
+
+    // --- Particle Canvas Setup ---
+    let ctx = null;
+    let particles = [];
+    const MAX_PARTICLES = 35;
+
+    if (canvas) {
+        ctx = canvas.getContext('2d');
+        const resizeCanvas = () => {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = `${window.innerWidth}px`;
+            canvas.style.height = `${window.innerHeight}px`;
+            if (ctx) ctx.scale(dpr, dpr);
+        };
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas, { passive: true });
+    }
+
+    class SparkParticle {
+        constructor(x, y, colorType) {
+            this.x = x;
+            this.y = y;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 1.8 + 0.4;
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed;
+            this.size = Math.random() * 2.8 + 1.2;
+            this.life = 1.0;
+            this.decay = Math.random() * 0.045 + 0.035;
+            this.colorType = colorType; // 'amber' or 'cyan'
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.vx *= 0.96;
+            this.vy *= 0.96;
+            this.size = Math.max(0, this.size - 0.03);
+            this.life -= this.decay;
+        }
+
+        draw(c) {
+            if (this.life <= 0 || this.size <= 0) return;
+            c.save();
+            c.globalAlpha = Math.max(0, this.life);
+            if (this.colorType === 'cyan') {
+                c.fillStyle = '#58A6FF';
+                c.shadowColor = '#38BDF8';
+            } else {
+                c.fillStyle = '#FFA500';
+                c.shadowColor = '#FF8C00';
+            }
+            c.shadowBlur = 8;
+            c.beginPath();
+            c.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            c.fill();
+            c.restore();
+        }
+    }
+
+    function spawnSparks(x, y, count = 2, colorType = 'amber') {
+        if (!ctx) return;
+        for (let i = 0; i < count; i++) {
+            if (particles.length < MAX_PARTICLES) {
+                particles.push(new SparkParticle(x, y, colorType));
+            }
+        }
+    }
+
+    // --- Fast Mouse Tracking ---
+    let lastX = -100;
+    let lastY = -100;
+
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        if (!isVisible) {
+            isVisible = true;
+            ringX = mouseX;
+            ringY = mouseY;
+        }
+        cursorDot.classList.remove('cursor-hidden');
+        cursorRing.classList.remove('cursor-hidden');
+        if (canvas) canvas.classList.remove('cursor-hidden');
+
+        cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+
+        // Spawn trailing spark particles if moved
+        const dist = Math.hypot(mouseX - lastX, mouseY - lastY);
+        if (dist > 7) {
+            spawnSparks(mouseX, mouseY, 1, isBlueMode ? 'cyan' : 'amber');
+            lastX = mouseX;
+            lastY = mouseY;
+        }
+    }, { passive: true });
+
+    // --- Physics Render Loop ---
+    function render() {
+        if (isVisible) {
+            // Smooth inertia lerp for the follower ring
+            ringX += (mouseX - ringX) * 0.18;
+            ringY += (mouseY - ringY) * 0.18;
+
+            cursorRing.style.transform = `translate3d(${ringX.toFixed(2)}px, ${ringY.toFixed(2)}px, 0) translate(-50%, -50%)`;
+
+            // Render Particle Canvas
+            if (ctx) {
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.update();
+                    p.draw(ctx);
+                    if (p.life <= 0 || p.size <= 0) {
+                        particles.splice(i, 1);
+                    }
+                }
+            }
+        }
+        requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+
+    // --- Tactile Click State & Shockwave Sparks ---
+    window.addEventListener('mousedown', (e) => {
+        cursorRing.classList.add('cursor-active');
+        cursorDot.classList.add('cursor-active');
+        spawnSparks(e.clientX, e.clientY, 8, isBlueMode ? 'cyan' : 'amber');
+    }, { passive: true });
+
+    window.addEventListener('mouseup', () => {
+        cursorRing.classList.remove('cursor-active');
+        cursorDot.classList.remove('cursor-active');
+    }, { passive: true });
+
+    // --- Window Visibility & Focus ---
+    document.addEventListener('mouseleave', () => {
+        isVisible = false;
+        cursorDot.classList.add('cursor-hidden');
+        cursorRing.classList.add('cursor-hidden');
+        if (canvas) canvas.classList.add('cursor-hidden');
+    });
+
+    document.addEventListener('mouseenter', () => {
+        isVisible = true;
+        cursorDot.classList.remove('cursor-hidden');
+        cursorRing.classList.remove('cursor-hidden');
+        if (canvas) canvas.classList.remove('cursor-hidden');
+    });
+
+    // --- Intelligent Event Delegation for Cursor Reactions ---
+    document.addEventListener('mouseover', (e) => {
+        const target = e.target;
+
+        // 1. Text input & Textarea focus state
+        const textInputEl = target.closest('input, textarea');
+        if (textInputEl) {
+            cursorRing.classList.add('cursor-hover-text');
+            cursorDot.classList.add('cursor-hover-text');
+            return;
+        }
+
+        // 2. Project Card or Media Preview
+        const cardEl = target.closest('.project-card, .project-media, .photo-card-wrapper');
+        const isActionBtn = target.closest('.project-btn, .icon-link, .overlay-actions');
+
+        if (cardEl && !isActionBtn) {
+            cursorRing.classList.add('cursor-hover-view');
+            cursorDot.classList.add('cursor-hover-view');
+            if (cursorLabel) cursorLabel.textContent = 'EXPLORE';
+            isViewMode = true;
+            return;
+        }
+
+        // 3. Interactive Buttons, Links, Badges
+        const interactiveEl = target.closest('a, button, .btn, .filter-tab, .social-btn, .icon-link, .tag-filter-buttons .filter-btn, .project-btn, .skill-tag, label, .exp-card, .cert-card, .stat-card');
+
+        if (interactiveEl) {
+            if (interactiveEl.classList.contains('btn-secondary') ||
+                interactiveEl.classList.contains('icon-link-live') ||
+                interactiveEl.classList.contains('accent-blue') ||
+                interactiveEl.classList.contains('badge-1') ||
+                interactiveEl.classList.contains('badge-4') ||
+                interactiveEl.classList.contains('project-btn-live')) {
+                cursorRing.classList.add('cursor-hover-blue');
+                cursorDot.classList.add('cursor-hover-blue');
+                isBlueMode = true;
+            } else {
+                cursorRing.classList.add('cursor-hover');
+                cursorDot.classList.add('cursor-hover');
+                isBlueMode = false;
+            }
+        }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+        const target = e.target;
+        const interactiveEl = target.closest('a, button, .btn, .filter-tab, .social-btn, .icon-link, .tag-filter-buttons .filter-btn, .project-btn, .skill-tag, input, textarea, select, label, .exp-card, .cert-card, .stat-card, .project-card, .project-media, .photo-card-wrapper');
+
+        if (interactiveEl) {
+            cursorRing.classList.remove('cursor-hover', 'cursor-hover-blue', 'cursor-hover-view', 'cursor-hover-text');
+            cursorDot.classList.remove('cursor-hover', 'cursor-hover-blue', 'cursor-hover-view', 'cursor-hover-text');
+            if (cursorLabel) cursorLabel.textContent = '';
+            isBlueMode = false;
+            isViewMode = false;
         }
     });
 }
