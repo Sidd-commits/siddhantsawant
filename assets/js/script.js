@@ -1,10 +1,13 @@
 /**
  * Siddhant Sawant - Modern Portfolio Web Application Scripts
- * Features: Typewriter, Navbar Scroll Spy, Mobile Drawer, Project Filters,
- * Skill Gauges, 3D Card Tilt, Timeline Animator, Async Formspree Handler
+ * Features: Lenis Smooth Scroll Engine, Typewriter, Scroll Spy, Mobile Drawer,
+ * Project Filters, Skill Gauges, 3D Card Tilt, Timeline Animator, Async Formspree Handler
  */
 
+let lenis = null;
+
 document.addEventListener('DOMContentLoaded', () => {
+    initSmoothScroll();
     initTypewriter();
     initNavbar();
     initProjectFilters();
@@ -17,7 +20,128 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   1. Dynamic Typewriter Effect
+   1. Lenis Butter-Smooth Scroll Engine & Scroll Progress
+   ========================================================================== */
+function initSmoothScroll() {
+    const scrollProgressBar = document.getElementById('scrollProgressBar');
+
+    if (typeof Lenis !== 'undefined') {
+        lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential deceleration curve
+            orientation: 'vertical',
+            gestureOrientation: 'vertical',
+            smoothWheel: true,
+            wheelMultiplier: 1.0,
+            touchMultiplier: 1.2,
+            infinite: false
+        });
+
+        // Continuous high-performance RAF loop
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Track Lenis scroll event
+        lenis.on('scroll', (e) => {
+            // Update top reading progress bar
+            if (scrollProgressBar) {
+                const progress = Math.max(0, Math.min(1, e.progress || (e.scroll / e.limit) || 0));
+                scrollProgressBar.style.width = `${(progress * 100).toFixed(2)}%`;
+            }
+
+            // Update navbar state
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                if (e.scroll > 40) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+
+            // Update back to top button
+            const backToTopBtn = document.getElementById('backToTop');
+            if (backToTopBtn) {
+                if (e.scroll > 400) {
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            }
+
+            // Update active navigation link
+            updateActiveNavLink(e.scroll);
+
+            // Update education timeline progress
+            updateTimelineProgress(e.scroll);
+        });
+    } else {
+        // Fallback if Lenis is not available
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            if (scrollProgressBar && docHeight > 0) {
+                scrollProgressBar.style.width = `${(scrollY / docHeight * 100).toFixed(2)}%`;
+            }
+
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                if (scrollY > 40) navbar.classList.add('scrolled');
+                else navbar.classList.remove('scrolled');
+            }
+
+            const backToTopBtn = document.getElementById('backToTop');
+            if (backToTopBtn) {
+                if (scrollY > 400) backToTopBtn.classList.add('show');
+                else backToTopBtn.classList.remove('show');
+            }
+
+            updateActiveNavLink(scrollY);
+            updateTimelineProgress(scrollY);
+        }, { passive: true });
+    }
+
+    // Intercept all internal anchor link clicks for buttery smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+            const href = anchor.getAttribute('href');
+            if (href === '#' || !href) return;
+
+            const targetElement = document.querySelector(href);
+            if (targetElement) {
+                e.preventDefault();
+
+                // Close mobile menu drawer if open
+                const navLinks = document.querySelector('.nav-links');
+                const hamburger = document.getElementById('hamburger-menu');
+                const navBackdrop = document.getElementById('nav-backdrop');
+                if (navLinks && navLinks.classList.contains('open')) {
+                    navLinks.classList.remove('open');
+                    if (hamburger) hamburger.classList.remove('active');
+                    if (navBackdrop) navBackdrop.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+
+                if (lenis) {
+                    lenis.scrollTo(targetElement, {
+                        offset: -80,
+                        duration: 1.3,
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+                    });
+                } else {
+                    const top = targetElement.getBoundingClientRect().top + window.scrollY - 80;
+                    window.scrollTo({ top, behavior: 'smooth' });
+                }
+            }
+        });
+    });
+}
+
+/* ==========================================================================
+   2. Dynamic Typewriter Effect
    ========================================================================== */
 function initTypewriter() {
     const typingElement = document.querySelector('.typing-text');
@@ -66,25 +190,12 @@ function initTypewriter() {
 }
 
 /* ==========================================================================
-   2. Navbar Scroll Spy & Mobile Menu
+   3. Navbar Scroll Spy & Mobile Menu
    ========================================================================== */
 function initNavbar() {
-    const navbar = document.getElementById('navbar');
     const hamburger = document.getElementById('hamburger-menu');
     const navLinks = document.querySelector('.nav-links');
     const navBackdrop = document.getElementById('nav-backdrop');
-    const navItems = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section[id]');
-
-    // Scroll Navbar blur background
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 40) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-        updateActiveNavLink();
-    });
 
     // Toggle Mobile Drawer
     function toggleMenu() {
@@ -110,43 +221,38 @@ function initNavbar() {
         navBackdrop.addEventListener('click', closeMenu);
     }
 
-    // Close menu when clicking nav links
-    navItems.forEach(link => {
-        link.addEventListener('click', () => {
-            closeMenu();
-        });
-    });
-
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+        if (e.key === 'Escape' && navLinks && navLinks.classList.contains('open')) {
             closeMenu();
         }
     });
+}
 
-    // Scroll Spy
-    function updateActiveNavLink() {
-        const scrollPosition = window.scrollY + 140;
+// Optimized Scroll Spy
+function updateActiveNavLink(currentScrollY) {
+    const scrollPosition = (typeof currentScrollY === 'number' ? currentScrollY : window.scrollY) + 140;
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-link');
 
-        sections.forEach(section => {
-            const top = section.offsetTop;
-            const height = section.offsetHeight;
-            const id = section.getAttribute('id');
+    sections.forEach(section => {
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+        const id = section.getAttribute('id');
 
-            if (scrollPosition >= top && scrollPosition < top + height) {
-                navItems.forEach(item => {
-                    item.classList.remove('active');
-                    if (item.getAttribute('href') === `#${id}`) {
-                        item.classList.add('active');
-                    }
-                });
-            }
-        });
-    }
+        if (scrollPosition >= top && scrollPosition < top + height) {
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${id}`) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    });
 }
 
 /* ==========================================================================
-   3. Project Filter Tabs
+   4. Project Filter Tabs
    ========================================================================== */
 function initProjectFilters() {
     const filterTabs = document.querySelectorAll('.filter-tab');
@@ -183,12 +289,17 @@ function initProjectFilters() {
                     }, 300);
                 }
             });
+
+            // If Lenis is active, notify resize
+            if (lenis) {
+                setTimeout(() => lenis.resize(), 320);
+            }
         });
     });
 }
 
 /* ==========================================================================
-   4. Circular SVG Skill Progress Gauges
+   5. Circular SVG Skill Progress Gauges
    ========================================================================== */
 function initSkillGauges() {
     const skillItems = document.querySelectorAll('.skill-item');
@@ -244,7 +355,7 @@ function initSkillGauges() {
 }
 
 /* ==========================================================================
-   5. Interactive Skill Tag Cloud Filters
+   6. Interactive Skill Tag Cloud Filters
    ========================================================================== */
 function initSkillTagFilters() {
     const filterBtns = document.querySelectorAll('.tag-filter-buttons .filter-btn');
@@ -268,18 +379,19 @@ function initSkillTagFilters() {
                     tag.style.opacity = '0';
                 }
             });
+
+            if (lenis) {
+                setTimeout(() => lenis.resize(), 100);
+            }
         });
     });
 }
 
 /* ==========================================================================
-   6. Education Timeline Scroll Tracker
+   7. Education Timeline Scroll Tracker
    ========================================================================== */
 function initEducationTimeline() {
     const timelineItems = document.querySelectorAll('.edu-timeline-item');
-    const progressBar = document.querySelector('.edu-timeline-progress-bar');
-    const eduSection = document.getElementById('education');
-
     if (!timelineItems.length) return;
 
     // Fade-in timeline milestone items
@@ -292,31 +404,28 @@ function initEducationTimeline() {
     }, { threshold: 0.15 });
 
     timelineItems.forEach(item => observer.observe(item));
+}
 
-    // Dynamic progress bar height tracking
-    function updateTimelineProgress() {
-        if (!eduSection || !progressBar) return;
+// Dynamic progress bar height tracking
+function updateTimelineProgress() {
+    const eduSection = document.getElementById('education');
+    const progressBar = document.querySelector('.edu-timeline-progress-bar');
+    if (!eduSection || !progressBar) return;
 
-        const rect = eduSection.getBoundingClientRect();
-        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    const rect = eduSection.getBoundingClientRect();
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
-        if (rect.top < windowHeight && rect.bottom > 0) {
-            const visible = Math.min(windowHeight, rect.bottom) - Math.max(0, rect.top);
-            const percent = Math.max(0, Math.min(100, (visible / rect.height) * 100));
-            progressBar.style.height = `${percent}%`;
-        }
+    if (rect.top < windowHeight && rect.bottom > 0) {
+        const visible = Math.min(windowHeight, rect.bottom) - Math.max(0, rect.top);
+        const percent = Math.max(0, Math.min(100, (visible / rect.height) * 100));
+        progressBar.style.height = `${percent}%`;
     }
-
-    window.addEventListener('scroll', updateTimelineProgress, { passive: true });
-    window.addEventListener('resize', updateTimelineProgress, { passive: true });
-    updateTimelineProgress();
 }
 
 /* ==========================================================================
-   7. 3D Card Parallax Tilt Effect
+   8. 3D Card Parallax Tilt Effect
    ========================================================================== */
 function init3DCardTilt() {
-    // Only enable on desktop pointers
     if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         const tiltCards = document.querySelectorAll('[data-tilt], .exp-card, .cert-card');
 
@@ -343,7 +452,7 @@ function init3DCardTilt() {
 }
 
 /* ==========================================================================
-   8. Contact Form Asynchronous Handler (Formspree)
+   9. Contact Form Asynchronous Handler (Formspree)
    ========================================================================== */
 function initContactForm() {
     const form = document.getElementById('contactForm');
@@ -437,24 +546,23 @@ function initContactForm() {
 }
 
 /* ==========================================================================
-   9. Back to Top Floating Button
+   10. Back to Top Floating Button
    ========================================================================== */
 function initBackToTop() {
     const backToTopBtn = document.getElementById('backToTop');
     if (!backToTopBtn) return;
 
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 400) {
-            backToTopBtn.classList.add('show');
-        } else {
-            backToTopBtn.classList.remove('show');
-        }
-    });
-
     backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        if (lenis) {
+            lenis.scrollTo(0, {
+                duration: 1.4,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+            });
+        } else {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
     });
 }
