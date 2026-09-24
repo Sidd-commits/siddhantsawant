@@ -215,327 +215,45 @@ body {
 }
 
 /* ==========================================================================
-   Creative Developer Fluid Magnetic Jelly Cursor System
+   Precision Brand-Accented Hardware Cursor
    ========================================================================== */
-@media (hover: hover) and (pointer: fine) {
-    /* Hide native cursor on desktop to give way to custom fluid cursor */
-    *, *::before, *::after {
-        cursor: none !important;
-    }
-
-    /* 1. Atmospheric Ambient Aura (Soft trailing spotlight) */
-    .custom-cursor-aura {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 260px;
-        height: 260px;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 99995;
-        background: radial-gradient(circle, rgba(255, 165, 0, 0.12) 0%, rgba(56, 189, 248, 0.04) 45%, transparent 70%);
-        filter: blur(16px);
-        transform: translate3d(-50%, -50%, 0);
-        will-change: transform, opacity;
-        transition: opacity 0.3s ease, background 0.4s ease;
-    }
-
-    /* 2. Precision Center Dot */
-    .custom-cursor-dot {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: radial-gradient(circle, #FFFFFF 20%, #FFA500 100%);
-        box-shadow: 0 0 10px #FFA500, 0 0 20px rgba(255, 165, 0, 0.8), 0 0 32px rgba(255, 140, 0, 0.4);
-        pointer-events: none;
-        z-index: 99999;
-        transform: translate3d(-50%, -50%, 0);
-        will-change: transform, opacity;
-        transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-                    height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-                    opacity 0.2s ease,
-                    background 0.2s ease,
-                    box-shadow 0.2s ease;
-    }
-
-    /* 3. Fluid Velocity & Morphing Follower Ring */
-    .custom-cursor-follower {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        border: 1.5px solid rgba(255, 165, 0, 0.7);
-        background: rgba(255, 165, 0, 0.06);
-        box-shadow: 0 0 18px rgba(255, 165, 0, 0.25);
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
-        pointer-events: none;
-        z-index: 99998;
-        transform: translate3d(-50%, -50%, 0);
-        will-change: transform, width, height, border-radius;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        overflow: hidden;
-        transition: width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-                    height 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-                    border-radius 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-                    border-color 0.25s ease,
-                    background 0.25s ease,
-                    box-shadow 0.25s ease,
-                    opacity 0.25s ease;
-    }
-
-    /* Inner Label & Icon */
-    .cursor-label,
-    .cursor-icon {
-        font-family: 'Fira Code', monospace;
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        color: #FFA500;
-        opacity: 0;
-        transform: scale(0.7);
-        pointer-events: none;
-        user-select: none;
-        transition: opacity 0.2s ease, transform 0.2s ease;
-        text-shadow: 0 0 8px rgba(255, 165, 0, 0.85);
-        line-height: 1;
-        white-space: nowrap;
-    }
-
-    .cursor-icon {
-        font-size: 12px;
-    }
-
-    /* Contextual Modes */
-
-    /* Mode: Magnetic Link / Button Hover */
-    .custom-cursor-follower.cursor-mode-magnetic {
-        width: 54px;
-        height: 54px;
-        border-color: rgba(255, 165, 0, 0.95);
-        background: rgba(255, 165, 0, 0.16);
-        box-shadow: 0 0 28px rgba(255, 165, 0, 0.55), inset 0 0 14px rgba(255, 165, 0, 0.2);
-    }
-
-    .custom-cursor-dot.cursor-mode-magnetic {
-        width: 4px;
-        height: 4px;
-        background: #FFFFFF;
-        box-shadow: 0 0 12px #FFFFFF, 0 0 20px #FFA500;
-    }
-
-    /* Mode: Azure Blue Secondary / Live Demo Hover */
-    .custom-cursor-follower.cursor-mode-blue {
-        border-color: rgba(56, 189, 248, 0.95);
-        background: rgba(56, 189, 248, 0.16);
-        box-shadow: 0 0 30px rgba(56, 189, 248, 0.55), inset 0 0 14px rgba(56, 189, 248, 0.22);
-    }
-
-    .custom-cursor-follower.cursor-mode-blue .cursor-label,
-    .custom-cursor-follower.cursor-mode-blue .cursor-icon {
-        color: #38BDF8;
-        text-shadow: 0 0 8px rgba(56, 189, 248, 0.85);
-    }
-
-    .custom-cursor-dot.cursor-mode-blue {
-        background: #38BDF8;
-        box-shadow: 0 0 12px #FFFFFF, 0 0 22px #38BDF8;
-    }
-
-    .custom-cursor-aura.cursor-mode-blue {
-        background: radial-gradient(circle, rgba(56, 189, 248, 0.16) 0%, rgba(124, 58, 237, 0.06) 50%, transparent 70%);
-    }
-
-    /* Mode: Project Cards / Showcase View Capsule Badge */
-    .custom-cursor-follower.cursor-mode-view {
-        width: 98px;
-        height: 38px;
-        border-radius: 20px;
-        border-color: rgba(255, 165, 0, 0.85);
-        background: rgba(13, 17, 23, 0.88);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 24px rgba(255, 165, 0, 0.45), inset 0 0 14px rgba(255, 165, 0, 0.15);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        padding: 0 12px;
-    }
-
-    .custom-cursor-follower.cursor-mode-view .cursor-label,
-    .custom-cursor-follower.cursor-mode-view .cursor-icon {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    .custom-cursor-dot.cursor-mode-view {
-        opacity: 0;
-        transform: scale(0);
-    }
-
-    /* Mode: Precision Text / Code Input Beam */
-    .custom-cursor-follower.cursor-mode-text {
-        width: 3px;
-        height: 28px;
-        border-radius: 2px;
-        border: none;
-        background: linear-gradient(180deg, #FFFFFF, #FFA500);
-        box-shadow: 0 0 14px #FFA500, 0 0 24px rgba(255, 165, 0, 0.8);
-    }
-
-    .custom-cursor-dot.cursor-mode-text {
-        opacity: 0;
-    }
-
-    /* Mode: Skill Pill Aura Glow */
-    .custom-cursor-follower.cursor-mode-pill {
-        width: 48px;
-        height: 48px;
-        border-color: rgba(255, 165, 0, 0.9);
-        background: rgba(255, 165, 0, 0.14);
-        box-shadow: 0 0 28px rgba(255, 165, 0, 0.45);
-    }
-
-    /* Mode: Active Mousedown / Press Feedback */
-    .custom-cursor-follower.cursor-active {
-        transform: translate3d(-50%, -50%, 0) scale(0.82) !important;
-        border-color: #FFA500;
-        background: rgba(255, 165, 0, 0.35);
-        box-shadow: 0 0 28px rgba(255, 165, 0, 0.75);
-    }
-
-    .custom-cursor-dot.cursor-active {
-        transform: translate3d(-50%, -50%, 0) scale(1.4) !important;
-        box-shadow: 0 0 20px #FFFFFF, 0 0 35px #FFA500;
-    }
-
-    /* Tactile Click Ripple Shockwave */
-    .cursor-click-ripple {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 2px solid #FFA500;
-        pointer-events: none;
-        z-index: 99997;
-        transform: translate3d(-50%, -50%, 0) scale(0.4);
-        animation: cursorShockwave 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .cursor-click-ripple.ripple-blue {
-        border-color: #38BDF8;
-    }
-
-    @keyframes cursorShockwave {
-        0% {
-            transform: translate3d(-50%, -50%, 0) scale(0.4);
-            opacity: 0.9;
-            box-shadow: 0 0 16px currentColor;
-        }
-        100% {
-            transform: translate3d(-50%, -50%, 0) scale(2.6);
-            opacity: 0;
-            border-width: 0.5px;
-            box-shadow: 0 0 0 transparent;
-        }
-    }
-
-    /* Hidden State (leaving window / blur) */
-    .cursor-hidden {
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    /* Magnetic Elements Smooth Spring Return */
-    .magnetic-element {
-        will-change: transform;
-        transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .magnetic-element:hover {
-        transition: none; /* instantaneous tracking during hover */
-    }
+html, body {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M4 3L11.5 21L14.2 13.8L21.4 11.1L4 3Z' fill='%23FFA500' stroke='%2307090E' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, auto;
 }
 
-/* Light Theme Overrides */
-[data-theme="light"] .custom-cursor-dot {
-    background: radial-gradient(circle, #FFFFFF 20%, #EA580C 100%);
-    box-shadow: 0 0 10px #EA580C, 0 0 20px rgba(234, 88, 12, 0.7);
+/* Interactive Clickable Elements */
+a,
+button,
+.btn,
+.skill-pill,
+.filter-tab,
+.social-btn,
+.icon-link,
+.project-btn,
+.project-card,
+.project-media,
+.photo-card-wrapper,
+.cert-card,
+.exp-card,
+#themeToggle,
+.back-to-top,
+.badge-interactive,
+label,
+select,
+summary {
+    cursor: pointer;
 }
 
-[data-theme="light"] .custom-cursor-follower {
-    border-color: rgba(234, 88, 12, 0.65);
-    background: rgba(234, 88, 12, 0.06);
-    box-shadow: 0 0 16px rgba(234, 88, 12, 0.2);
+/* Inputs & Editable Text */
+input,
+textarea,
+[contenteditable="true"] {
+    cursor: text;
 }
 
-[data-theme="light"] .custom-cursor-follower .cursor-label,
-[data-theme="light"] .custom-cursor-follower .cursor-icon {
-    color: #EA580C;
-    text-shadow: 0 0 8px rgba(234, 88, 12, 0.5);
-}
-
-[data-theme="light"] .custom-cursor-aura {
-    background: radial-gradient(circle, rgba(234, 88, 12, 0.08) 0%, rgba(37, 99, 235, 0.03) 45%, transparent 70%);
-}
-
-[data-theme="light"] .custom-cursor-follower.cursor-mode-magnetic {
-    border-color: rgba(234, 88, 12, 0.9);
-    background: rgba(234, 88, 12, 0.14);
-    box-shadow: 0 0 24px rgba(234, 88, 12, 0.45);
-}
-
-[data-theme="light"] .custom-cursor-follower.cursor-mode-blue {
-    border-color: rgba(37, 99, 235, 0.9);
-    background: rgba(37, 99, 235, 0.12);
-    box-shadow: 0 0 26px rgba(37, 99, 235, 0.45);
-}
-
-[data-theme="light"] .custom-cursor-follower.cursor-mode-blue .cursor-label,
-[data-theme="light"] .custom-cursor-follower.cursor-mode-blue .cursor-icon {
-    color: #2563EB;
-    text-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
-}
-
-[data-theme="light"] .custom-cursor-dot.cursor-mode-blue {
-    background: #2563EB;
-    box-shadow: 0 0 12px #FFFFFF, 0 0 20px #2563EB;
-}
-
-[data-theme="light"] .custom-cursor-follower.cursor-mode-view {
-    border-color: rgba(234, 88, 12, 0.7);
-    background: rgba(255, 255, 255, 0.94);
-    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12), 0 0 20px rgba(234, 88, 12, 0.35);
-}
-
-[data-theme="light"] .custom-cursor-follower.cursor-mode-text {
-    background: linear-gradient(180deg, #0F172A, #EA580C);
-    box-shadow: 0 0 12px #EA580C;
-}
-
-[data-theme="light"] .cursor-click-ripple {
-    border-color: #EA580C;
-}
-
-[data-theme="light"] .cursor-click-ripple.ripple-blue {
-    border-color: #2563EB;
-}
-
-/* Touch & Mobile Devices fallback */
-@media (hover: none) or (pointer: coarse) {
-    .custom-cursor-dot,
-    .custom-cursor-follower,
-    .custom-cursor-aura,
-    .cursor-click-ripple {
-        display: none !important;
-    }
+/* Light Theme Cursor */
+[data-theme="light"] {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M4 3L11.5 21L14.2 13.8L21.4 11.1L4 3Z' fill='%23EA580C' stroke='%230F172A' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, auto;
 }
 
 /* Custom Scrollbar */
