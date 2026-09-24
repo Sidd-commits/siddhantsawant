@@ -7,6 +7,7 @@
 let lenis = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    initThemeToggle();
     initCustomCursor();
     initSmoothScroll();
     initTypewriter();
@@ -633,14 +634,15 @@ function initCustomCursor() {
 
         draw(c) {
             if (this.life <= 0 || this.size <= 0) return;
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
             c.save();
             c.globalAlpha = Math.max(0, this.life);
             if (this.colorType === 'cyan') {
-                c.fillStyle = '#58A6FF';
-                c.shadowColor = '#38BDF8';
+                c.fillStyle = isLight ? '#2563EB' : '#58A6FF';
+                c.shadowColor = isLight ? '#3B82F6' : '#38BDF8';
             } else {
-                c.fillStyle = '#FFA500';
-                c.shadowColor = '#FF8C00';
+                c.fillStyle = isLight ? '#EA580C' : '#FFA500';
+                c.shadowColor = isLight ? '#F97316' : '#FF8C00';
             }
             c.shadowBlur = 8;
             c.beginPath();
@@ -797,4 +799,48 @@ function initCustomCursor() {
             isViewMode = false;
         }
     });
+}
+
+/* ==========================================================================
+   12. Seamless Light / Dark Theme Switcher & Persistence
+   ========================================================================== */
+function initThemeToggle() {
+    const themeToggleBtn = document.getElementById('themeToggle');
+    if (!themeToggleBtn) return;
+
+    function applyTheme(theme, save = true) {
+        document.documentElement.setAttribute('data-theme', theme);
+        if (save) {
+            try {
+                localStorage.setItem('portfolio-theme', theme);
+            } catch (e) {}
+        }
+
+        const isLight = theme === 'light';
+        themeToggleBtn.setAttribute('aria-label', isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode');
+        themeToggleBtn.setAttribute('title', isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode');
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+        document.documentElement.classList.add('theme-transitioning');
+        applyTheme(nextTheme, true);
+
+        window.setTimeout(() => {
+            document.documentElement.classList.remove('theme-transitioning');
+        }, 400);
+    });
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+    mediaQuery.addEventListener('change', (e) => {
+        const savedTheme = localStorage.getItem('portfolio-theme');
+        if (!savedTheme) {
+            applyTheme(e.matches ? 'light' : 'dark', false);
+        }
+    });
+
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(currentTheme, false);
 }

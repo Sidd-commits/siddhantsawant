@@ -40,6 +40,18 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Theme Initializer (Zero FOUC Flash) -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('portfolio-theme');
+                const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                const theme = savedTheme || (prefersLight ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="assets/css/styles.css">
 
@@ -95,6 +107,12 @@
             </nav>
 
             <div class="nav-actions">
+                <!-- Theme Toggle Button -->
+                <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle Theme (Light / Dark Mode)" title="Switch Theme (Light/Dark)">
+                    <i class="fas fa-moon theme-icon moon-icon"></i>
+                    <i class="fas fa-sun theme-icon sun-icon"></i>
+                </button>
+
                 <button class="hamburger" id="hamburger-menu" aria-label="Toggle Navigation Menu" aria-expanded="false">
                     <span></span>
                     <span></span>
