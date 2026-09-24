@@ -13,8 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTypewriter();
     initNavbar();
     initProjectFilters();
-    initSkillGauges();
-    initSkillTagFilters();
+    initSkillsMarquee();
     initEducationTimeline();
     init3DCardTilt();
     initContactForm();
@@ -301,91 +300,24 @@ function initProjectFilters() {
 }
 
 /* ==========================================================================
-   5. Circular SVG Skill Progress Gauges
+   5. Interactive Skills & Technologies Marquee
    ========================================================================== */
-function initSkillGauges() {
-    const skillItems = document.querySelectorAll('.skill-item');
-    if (!skillItems.length) return;
+function initSkillsMarquee() {
+    const marqueeRows = document.querySelectorAll('.marquee-row');
+    if (!marqueeRows.length) return;
 
-    const circumference = 2 * Math.PI * 28; // ~175.93px
+    // Optional touch pause & smooth hover handling for mobile and desktop
+    marqueeRows.forEach(row => {
+        const track = row.querySelector('.marquee-track');
+        if (!track) return;
 
-    skillItems.forEach(item => {
-        const circleContainer = item.querySelector('.skill-circle');
-        if (!circleContainer) return;
+        row.addEventListener('touchstart', () => {
+            track.style.animationPlayState = 'paused';
+        }, { passive: true });
 
-        // Inject SVG if not present
-        if (!circleContainer.querySelector('svg')) {
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('width', '72');
-            svg.setAttribute('height', '72');
-            svg.setAttribute('viewBox', '0 0 72 72');
-
-            svg.innerHTML = `
-                <defs>
-                    <linearGradient id="skill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FFA500"/>
-                        <stop offset="100%" stop-color="#58A6FF"/>
-                    </linearGradient>
-                </defs>
-                <circle class="skill-bg" cx="36" cy="36" r="28" />
-                <circle class="skill-bar" cx="36" cy="36" r="28" 
-                        stroke-dasharray="${circumference}" 
-                        stroke-dashoffset="${circumference}" />
-            `;
-            circleContainer.appendChild(svg);
-        }
-    });
-
-    // Animate on scroll into view
-    const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const item = entry.target;
-                const percentage = parseInt(item.getAttribute('data-skill'), 10) || 0;
-                const bar = item.querySelector('.skill-bar');
-
-                if (bar) {
-                    const offset = circumference - (circumference * percentage / 100);
-                    bar.style.strokeDashoffset = offset;
-                }
-                obs.unobserve(item);
-            }
-        });
-    }, { threshold: 0.3 });
-
-    skillItems.forEach(item => observer.observe(item));
-}
-
-/* ==========================================================================
-   6. Interactive Skill Tag Cloud Filters
-   ========================================================================== */
-function initSkillTagFilters() {
-    const filterBtns = document.querySelectorAll('.tag-filter-buttons .filter-btn');
-    const tags = document.querySelectorAll('.skill-tag');
-
-    if (!filterBtns.length || !tags.length) return;
-
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const filter = btn.getAttribute('data-filter');
-
-            tags.forEach(tag => {
-                if (filter === 'all' || tag.classList.contains(filter)) {
-                    tag.style.display = 'inline-flex';
-                    tag.style.opacity = '1';
-                } else {
-                    tag.style.display = 'none';
-                    tag.style.opacity = '0';
-                }
-            });
-
-            if (lenis) {
-                setTimeout(() => lenis.resize(), 100);
-            }
-        });
+        row.addEventListener('touchend', () => {
+            track.style.animationPlayState = 'running';
+        }, { passive: true });
     });
 }
 
@@ -825,8 +757,8 @@ function initCustomCursor() {
             return;
         }
 
-        // 3. Interactive Buttons, Links, Badges
-        const interactiveEl = target.closest('a, button, .btn, .filter-tab, .social-btn, .icon-link, .tag-filter-buttons .filter-btn, .project-btn, .skill-tag, label, .exp-card, .cert-card, .stat-card');
+        // 3. Interactive Buttons, Links, Badges, Skill Pills
+        const interactiveEl = target.closest('a, button, .btn, .filter-tab, .social-btn, .icon-link, .project-btn, .skill-pill, label, .exp-card, .cert-card, .stat-card');
 
         if (interactiveEl) {
             if (interactiveEl.classList.contains('btn-secondary') ||
