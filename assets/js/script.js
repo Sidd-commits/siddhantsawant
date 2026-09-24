@@ -561,233 +561,271 @@ function initBackToTop() {
 }
 
 /* ==========================================================================
-   11. Interactive Cyberpunk Glowing Custom Cursor System
+   11. Creative Developer Fluid Magnetic Jelly Cursor System
    ========================================================================== */
 function initCustomCursor() {
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
     const cursorDot = document.getElementById('cursorDot');
-    const cursorRing = document.getElementById('cursorRing');
+    const cursorFollower = document.getElementById('cursorFollower');
+    const cursorAura = document.getElementById('cursorAura');
     const cursorLabel = document.getElementById('cursorLabel');
-    const canvas = document.getElementById('cursorTrail');
+    const cursorIcon = document.getElementById('cursorIcon');
 
-    if (!cursorDot || !cursorRing) return;
+    if (!cursorDot || !cursorFollower) return;
 
-    let mouseX = -100;
-    let mouseY = -100;
-    let ringX = -100;
-    let ringY = -100;
+    // Coordinate & Physics State
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let lastMouseX = mouseX;
+    let lastMouseY = mouseY;
+
+    let followerX = mouseX;
+    let followerY = mouseY;
+    let auraX = mouseX;
+    let auraY = mouseY;
+
+    let velocity = 0;
+    let angle = 0;
     let isVisible = false;
-    let isBlueMode = false;
+
+    // Context Modes
     let isViewMode = false;
+    let isTextMode = false;
+    let isBlueMode = false;
+    let isPillMode = false;
+    let isMagneticMode = false;
 
-    // --- Particle Canvas Setup ---
-    let ctx = null;
-    let particles = [];
-    const MAX_PARTICLES = 35;
+    // Magnetic target tracking
+    let currentMagneticEl = null;
+    let magneticCenterX = 0;
+    let magneticCenterY = 0;
 
-    if (canvas) {
-        ctx = canvas.getContext('2d');
-        const resizeCanvas = () => {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
-            canvas.style.width = `${window.innerWidth}px`;
-            canvas.style.height = `${window.innerHeight}px`;
-            if (ctx) ctx.scale(dpr, dpr);
-        };
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas, { passive: true });
-    }
-
-    class SparkParticle {
-        constructor(x, y, colorType) {
-            this.x = x;
-            this.y = y;
-            const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 1.8 + 0.4;
-            this.vx = Math.cos(angle) * speed;
-            this.vy = Math.sin(angle) * speed;
-            this.size = Math.random() * 2.8 + 1.2;
-            this.life = 1.0;
-            this.decay = Math.random() * 0.045 + 0.035;
-            this.colorType = colorType; // 'amber' or 'cyan'
-        }
-
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.vx *= 0.96;
-            this.vy *= 0.96;
-            this.size = Math.max(0, this.size - 0.03);
-            this.life -= this.decay;
-        }
-
-        draw(c) {
-            if (this.life <= 0 || this.size <= 0) return;
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            c.save();
-            c.globalAlpha = Math.max(0, this.life);
-            if (this.colorType === 'cyan') {
-                c.fillStyle = isLight ? '#2563EB' : '#58A6FF';
-                c.shadowColor = isLight ? '#3B82F6' : '#38BDF8';
-            } else {
-                c.fillStyle = isLight ? '#EA580C' : '#FFA500';
-                c.shadowColor = isLight ? '#F97316' : '#FF8C00';
-            }
-            c.shadowBlur = 8;
-            c.beginPath();
-            c.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            c.fill();
-            c.restore();
-        }
-    }
-
-    function spawnSparks(x, y, count = 2, colorType = 'amber') {
-        if (!ctx) return;
-        for (let i = 0; i < count; i++) {
-            if (particles.length < MAX_PARTICLES) {
-                particles.push(new SparkParticle(x, y, colorType));
-            }
-        }
-    }
-
-    // --- Fast Mouse Tracking ---
-    let lastX = -100;
-    let lastY = -100;
-
+    // --- Fast Mouse Movement Tracking ---
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
 
         if (!isVisible) {
             isVisible = true;
-            ringX = mouseX;
-            ringY = mouseY;
+            followerX = mouseX;
+            followerY = mouseY;
+            auraX = mouseX;
+            auraY = mouseY;
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+            cursorDot.classList.remove('cursor-hidden');
+            cursorFollower.classList.remove('cursor-hidden');
+            if (cursorAura) cursorAura.classList.remove('cursor-hidden');
         }
-        cursorDot.classList.remove('cursor-hidden');
-        cursorRing.classList.remove('cursor-hidden');
-        if (canvas) canvas.classList.remove('cursor-hidden');
 
+        // Direct hardware zero-lag tracking for precision dot
         cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
 
-        // Spawn trailing spark particles if moved
-        const dist = Math.hypot(mouseX - lastX, mouseY - lastY);
-        if (dist > 7) {
-            spawnSparks(mouseX, mouseY, 1, isBlueMode ? 'cyan' : 'amber');
-            lastX = mouseX;
-            lastY = mouseY;
+        // Handle magnetic pull on active element if hovered
+        if (currentMagneticEl) {
+            const rect = currentMagneticEl.getBoundingClientRect();
+            magneticCenterX = rect.left + rect.width / 2;
+            magneticCenterY = rect.top + rect.height / 2;
+            const pullX = (mouseX - magneticCenterX) * 0.22;
+            const pullY = (mouseY - magneticCenterY) * 0.22;
+            currentMagneticEl.style.transform = `translate3d(${pullX.toFixed(1)}px, ${pullY.toFixed(1)}px, 0)`;
         }
     }, { passive: true });
 
-    // --- Physics Render Loop ---
-    function render() {
+    // --- Physics Render Loop (Squash, Stretch, Magnetic Spring, Lerp) ---
+    function renderPhysics() {
         if (isVisible) {
-            // Smooth inertia lerp for the follower ring
-            ringX += (mouseX - ringX) * 0.18;
-            ringY += (mouseY - ringY) * 0.18;
+            // 1. Calculate instantaneous velocity & smoothed speed filter
+            const dx = mouseX - lastMouseX;
+            const dy = mouseY - lastMouseY;
+            const instantSpeed = Math.hypot(dx, dy);
+            velocity += (instantSpeed - velocity) * 0.32;
 
-            cursorRing.style.transform = `translate3d(${ringX.toFixed(2)}px, ${ringY.toFixed(2)}px, 0) translate(-50%, -50%)`;
+            if (instantSpeed > 1.5) {
+                angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            }
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
 
-            // Render Particle Canvas
-            if (ctx) {
-                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    const p = particles[i];
-                    p.update();
-                    p.draw(ctx);
-                    if (p.life <= 0 || p.size <= 0) {
-                        particles.splice(i, 1);
-                    }
-                }
+            // 2. Determine target position for follower (snap towards magnetic center if locked)
+            let targetFollowerX = mouseX;
+            let targetFollowerY = mouseY;
+
+            if (currentMagneticEl) {
+                targetFollowerX = magneticCenterX + (mouseX - magneticCenterX) * 0.25;
+                targetFollowerY = magneticCenterY + (mouseY - magneticCenterY) * 0.25;
+            }
+
+            // 3. Smooth Lerp
+            followerX += (targetFollowerX - followerX) * (currentMagneticEl ? 0.28 : 0.20);
+            followerY += (targetFollowerY - followerY) * (currentMagneticEl ? 0.28 : 0.20);
+
+            // Aura ambient glow follows with soft ethereal inertia
+            auraX += (mouseX - auraX) * 0.075;
+            auraY += (mouseY - auraY) * 0.075;
+
+            // 4. Follower Transform (Apply Jelly Velocity Squash & Stretch when in free flight)
+            if (!isViewMode && !isTextMode && !currentMagneticEl) {
+                const stretch = Math.min(velocity * 0.013, 0.48);
+                const scaleX = 1 + stretch;
+                const scaleY = 1 - Math.min(stretch * 0.55, 0.28);
+                cursorFollower.style.transform = `translate3d(${followerX.toFixed(2)}px, ${followerY.toFixed(2)}px, 0) translate(-50%, -50%) rotate(${angle.toFixed(1)}deg) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)})`;
+            } else {
+                cursorFollower.style.transform = `translate3d(${followerX.toFixed(2)}px, ${followerY.toFixed(2)}px, 0) translate(-50%, -50%) scale(1, 1)`;
+            }
+
+            // 5. Aura Transform
+            if (cursorAura) {
+                cursorAura.style.transform = `translate3d(${auraX.toFixed(2)}px, ${auraY.toFixed(2)}px, 0) translate(-50%, -50%)`;
             }
         }
-        requestAnimationFrame(render);
-    }
-    requestAnimationFrame(render);
 
-    // --- Tactile Click State & Shockwave Sparks ---
+        requestAnimationFrame(renderPhysics);
+    }
+    requestAnimationFrame(renderPhysics);
+
+    // --- Tactile Click Feedback & Ripple Shockwave ---
     window.addEventListener('mousedown', (e) => {
-        cursorRing.classList.add('cursor-active');
+        cursorFollower.classList.add('cursor-active');
         cursorDot.classList.add('cursor-active');
-        spawnSparks(e.clientX, e.clientY, 8, isBlueMode ? 'cyan' : 'amber');
+
+        // Spawn Expanding Tactile Shockwave
+        const ripple = document.createElement('div');
+        ripple.className = 'cursor-click-ripple' + (isBlueMode ? ' ripple-blue' : '');
+        ripple.style.left = `${e.clientX}px`;
+        ripple.style.top = `${e.clientY}px`;
+        document.body.appendChild(ripple);
+
+        ripple.addEventListener('animationend', () => {
+            ripple.remove();
+        }, { once: true });
     }, { passive: true });
 
     window.addEventListener('mouseup', () => {
-        cursorRing.classList.remove('cursor-active');
+        cursorFollower.classList.remove('cursor-active');
         cursorDot.classList.remove('cursor-active');
     }, { passive: true });
 
-    // --- Window Visibility & Focus ---
+    // --- Viewport Enter / Leave ---
     document.addEventListener('mouseleave', () => {
         isVisible = false;
         cursorDot.classList.add('cursor-hidden');
-        cursorRing.classList.add('cursor-hidden');
-        if (canvas) canvas.classList.add('cursor-hidden');
+        cursorFollower.classList.add('cursor-hidden');
+        if (cursorAura) cursorAura.classList.add('cursor-hidden');
+        if (currentMagneticEl) {
+            currentMagneticEl.style.transform = '';
+            currentMagneticEl = null;
+        }
     });
 
     document.addEventListener('mouseenter', () => {
         isVisible = true;
         cursorDot.classList.remove('cursor-hidden');
-        cursorRing.classList.remove('cursor-hidden');
-        if (canvas) canvas.classList.remove('cursor-hidden');
+        cursorFollower.classList.remove('cursor-hidden');
+        if (cursorAura) cursorAura.classList.remove('cursor-hidden');
     });
 
-    // --- Intelligent Event Delegation for Cursor Reactions ---
+    // --- Intelligent Event Delegation for Context Modes & Magnetic Snap ---
+    const MAGNETIC_SELECTORS = '.btn, .filter-tab, .social-btn, .icon-link, .nav-links a, #themeToggle, .back-to-top, .project-btn, .badge-interactive';
+
     document.addEventListener('mouseover', (e) => {
         const target = e.target;
 
         // 1. Text input & Textarea focus state
-        const textInputEl = target.closest('input, textarea');
+        const textInputEl = target.closest('input, textarea, [contenteditable="true"]');
         if (textInputEl) {
-            cursorRing.classList.add('cursor-hover-text');
-            cursorDot.classList.add('cursor-hover-text');
+            isTextMode = true;
+            cursorFollower.classList.add('cursor-mode-text');
+            cursorDot.classList.add('cursor-mode-text');
             return;
         }
 
-        // 2. Project Card or Media Preview
+        // 2. Project Card or Media Showcase Preview (View Capsule)
         const cardEl = target.closest('.project-card, .project-media, .photo-card-wrapper');
         const isActionBtn = target.closest('.project-btn, .icon-link, .overlay-actions');
 
         if (cardEl && !isActionBtn) {
-            cursorRing.classList.add('cursor-hover-view');
-            cursorDot.classList.add('cursor-hover-view');
-            if (cursorLabel) cursorLabel.textContent = 'EXPLORE';
             isViewMode = true;
+            cursorFollower.classList.add('cursor-mode-view');
+            cursorDot.classList.add('cursor-mode-view');
+            if (cursorLabel) cursorLabel.textContent = 'EXPLORE';
+            if (cursorIcon) cursorIcon.textContent = '↗';
             return;
         }
 
-        // 3. Interactive Buttons, Links, Badges, Skill Pills
-        const interactiveEl = target.closest('a, button, .btn, .filter-tab, .social-btn, .icon-link, .project-btn, .skill-pill, label, .exp-card, .cert-card, .stat-card');
+        // 3. Marquee Skill Pill Glow
+        const skillPillEl = target.closest('.skill-pill');
+        if (skillPillEl) {
+            isPillMode = true;
+            cursorFollower.classList.add('cursor-mode-pill');
+            return;
+        }
 
-        if (interactiveEl) {
-            if (interactiveEl.classList.contains('btn-secondary') ||
-                interactiveEl.classList.contains('icon-link-live') ||
-                interactiveEl.classList.contains('accent-blue') ||
-                interactiveEl.classList.contains('badge-1') ||
-                interactiveEl.classList.contains('badge-4') ||
-                interactiveEl.classList.contains('project-btn-live')) {
-                cursorRing.classList.add('cursor-hover-blue');
-                cursorDot.classList.add('cursor-hover-blue');
+        // 4. Interactive Magnetic Elements (Buttons, Links, Tabs, Icons)
+        const magneticEl = target.closest(MAGNETIC_SELECTORS);
+        if (magneticEl) {
+            currentMagneticEl = magneticEl;
+            currentMagneticEl.classList.add('magnetic-element');
+            const rect = currentMagneticEl.getBoundingClientRect();
+            magneticCenterX = rect.left + rect.width / 2;
+            magneticCenterY = rect.top + rect.height / 2;
+
+            isMagneticMode = true;
+            cursorFollower.classList.add('cursor-mode-magnetic');
+            cursorDot.classList.add('cursor-mode-magnetic');
+
+            // Blue accent tint check
+            if (magneticEl.classList.contains('btn-secondary') ||
+                magneticEl.classList.contains('icon-link-live') ||
+                magneticEl.classList.contains('accent-blue') ||
+                magneticEl.classList.contains('badge-1') ||
+                magneticEl.classList.contains('badge-4') ||
+                magneticEl.classList.contains('project-btn-live')) {
                 isBlueMode = true;
-            } else {
-                cursorRing.classList.add('cursor-hover');
-                cursorDot.classList.add('cursor-hover');
-                isBlueMode = false;
+                cursorFollower.classList.add('cursor-mode-blue');
+                cursorDot.classList.add('cursor-mode-blue');
+                if (cursorAura) cursorAura.classList.add('cursor-mode-blue');
             }
         }
     });
 
     document.addEventListener('mouseout', (e) => {
         const target = e.target;
-        const interactiveEl = target.closest('a, button, .btn, .filter-tab, .social-btn, .icon-link, .tag-filter-buttons .filter-btn, .project-btn, .skill-tag, input, textarea, select, label, .exp-card, .cert-card, .stat-card, .project-card, .project-media, .photo-card-wrapper');
 
-        if (interactiveEl) {
-            cursorRing.classList.remove('cursor-hover', 'cursor-hover-blue', 'cursor-hover-view', 'cursor-hover-text');
-            cursorDot.classList.remove('cursor-hover', 'cursor-hover-blue', 'cursor-hover-view', 'cursor-hover-text');
-            if (cursorLabel) cursorLabel.textContent = '';
-            isBlueMode = false;
+        // Reset Text Mode
+        if (target.closest('input, textarea, [contenteditable="true"]')) {
+            isTextMode = false;
+            cursorFollower.classList.remove('cursor-mode-text');
+            cursorDot.classList.remove('cursor-mode-text');
+        }
+
+        // Reset View Mode
+        if (target.closest('.project-card, .project-media, .photo-card-wrapper')) {
             isViewMode = false;
+            cursorFollower.classList.remove('cursor-mode-view');
+            cursorDot.classList.remove('cursor-mode-view');
+            if (cursorLabel) cursorLabel.textContent = '';
+            if (cursorIcon) cursorIcon.textContent = '';
+        }
+
+        // Reset Pill Mode
+        if (target.closest('.skill-pill')) {
+            isPillMode = false;
+            cursorFollower.classList.remove('cursor-mode-pill');
+        }
+
+        // Reset Magnetic Mode
+        if (target.closest(MAGNETIC_SELECTORS)) {
+            if (currentMagneticEl) {
+                currentMagneticEl.style.transform = '';
+                currentMagneticEl = null;
+            }
+            isMagneticMode = false;
+            isBlueMode = false;
+            cursorFollower.classList.remove('cursor-mode-magnetic', 'cursor-mode-blue');
+            cursorDot.classList.remove('cursor-mode-magnetic', 'cursor-mode-blue');
+            if (cursorAura) cursorAura.classList.remove('cursor-mode-blue');
         }
     });
 }
