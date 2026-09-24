@@ -406,21 +406,80 @@ function initEducationTimeline() {
     }, { threshold: 0.15 });
 
     timelineItems.forEach(item => observer.observe(item));
+
+    // Calculate initial layout & progress
+    updateTimelineLayout();
+    updateTimelineProgress();
+
+    // Recalculate on window resize and image/font load
+    window.addEventListener('resize', () => {
+        updateTimelineLayout();
+        updateTimelineProgress();
+    }, { passive: true });
+
+    window.addEventListener('load', () => {
+        updateTimelineLayout();
+        updateTimelineProgress();
+    });
 }
 
-// Dynamic progress bar height tracking
-function updateTimelineProgress() {
-    const eduSection = document.getElementById('education');
-    const progressBar = document.querySelector('.edu-timeline-progress-bar');
-    if (!eduSection || !progressBar) return;
+// Dynamically align track to connect from center of first milestone to center of last milestone
+function updateTimelineLayout() {
+    const container = document.querySelector('.edu-timeline-container');
+    const track = document.querySelector('.edu-timeline-track');
+    const items = document.querySelectorAll('.edu-timeline-item');
+    if (!container || !track || items.length < 2) return;
 
-    const rect = eduSection.getBoundingClientRect();
+    const firstMarker = items[0].querySelector('.edu-marker-circle');
+    const lastMarker = items[items.length - 1].querySelector('.edu-marker-circle');
+    if (!firstMarker || !lastMarker) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const firstRect = firstMarker.getBoundingClientRect();
+    const lastRect = lastMarker.getBoundingClientRect();
+
+    const firstCenterY = (firstRect.top + firstRect.height / 2) - containerRect.top;
+    const lastCenterY = (lastRect.top + lastRect.height / 2) - containerRect.top;
+    const firstCenterX = (firstRect.left + firstRect.width / 2) - containerRect.left;
+
+    track.style.top = `${Math.round(firstCenterY)}px`;
+    track.style.height = `${Math.round(lastCenterY - firstCenterY)}px`;
+    track.style.left = `${Math.round(firstCenterX)}px`;
+}
+
+// Dynamic progress bar height tracking from first marker (0%) to last milestone marker (100%)
+function updateTimelineProgress() {
+    const progressBar = document.querySelector('.edu-timeline-progress-bar');
+    const items = document.querySelectorAll('.edu-timeline-item');
+    if (!progressBar || items.length < 2) return;
+
+    const firstMarker = items[0].querySelector('.edu-marker-circle');
+    const lastMarker = items[items.length - 1].querySelector('.edu-marker-circle');
+    if (!firstMarker || !lastMarker) return;
+
+    const firstRect = firstMarker.getBoundingClientRect();
+    const lastRect = lastMarker.getBoundingClientRect();
     const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
-    if (rect.top < windowHeight && rect.bottom > 0) {
-        const visible = Math.min(windowHeight, rect.bottom) - Math.max(0, rect.top);
-        const percent = Math.max(0, Math.min(100, (visible / rect.height) * 100));
-        progressBar.style.height = `${percent}%`;
+    // Focal tracking point in the viewport (~55% down the screen where the reader looks)
+    const focalPoint = windowHeight * 0.55;
+
+    const startY = firstRect.top + firstRect.height / 2;
+    const endY = lastRect.top + lastRect.height / 2;
+    const totalDistance = endY - startY;
+
+    if (totalDistance <= 0) return;
+
+    const currentDistance = focalPoint - startY;
+    let percent = (currentDistance / totalDistance) * 100;
+    percent = Math.max(0, Math.min(100, percent));
+
+    progressBar.style.height = `${percent.toFixed(2)}%`;
+
+    if (percent > 0 && percent < 100) {
+        progressBar.classList.add('active');
+    } else {
+        progressBar.classList.remove('active');
     }
 }
 

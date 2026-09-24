@@ -1927,9 +1927,9 @@ a:hover {
 
 .edu-timeline-track {
     position: absolute;
-    top: 30px;
-    bottom: 30px;
+    top: 28px;
     left: 28px;
+    transform: translateX(-50%);
     width: 3px;
     background: rgba(240, 246, 252, 0.1);
     border-radius: 3px;
@@ -1938,9 +1938,30 @@ a:hover {
 .edu-timeline-progress-bar {
     width: 100%;
     height: 0%;
-    background: var(--gradient-brand);
-    box-shadow: 0 0 12px var(--accent-primary);
-    transition: height 0.3s ease-out;
+    background: linear-gradient(180deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    box-shadow: 0 0 12px var(--accent-primary), 0 0 20px var(--accent-secondary);
+    border-radius: 3px;
+    position: relative;
+    transition: height 0.08s ease-out;
+}
+
+.edu-timeline-progress-bar::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent-secondary);
+    box-shadow: 0 0 8px var(--accent-secondary), 0 0 16px var(--accent-primary);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.edu-timeline-progress-bar.active::after {
+    opacity: 1;
 }
 
 .edu-timeline-list {
