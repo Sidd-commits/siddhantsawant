@@ -7,7 +7,6 @@
 let lenis = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    initThemeToggle();
     initSmoothScroll();
     initTypewriter();
     initNavbar();
@@ -557,48 +556,4 @@ function initBackToTop() {
             });
         }
     });
-}
-
-/* ==========================================================================
-   11. Seamless Light / Dark Theme Switcher & Persistence
-   ========================================================================== */
-function initThemeToggle() {
-    const themeToggleBtn = document.getElementById('themeToggle');
-    if (!themeToggleBtn) return;
-
-    function applyTheme(theme, save = true) {
-        document.documentElement.setAttribute('data-theme', theme);
-        if (save) {
-            try {
-                localStorage.setItem('portfolio-theme', theme);
-            } catch (e) {}
-        }
-
-        const isLight = theme === 'light';
-        themeToggleBtn.setAttribute('aria-label', isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode');
-        themeToggleBtn.setAttribute('title', isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode');
-    }
-
-    themeToggleBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-        const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-        document.documentElement.classList.add('theme-transitioning');
-        applyTheme(nextTheme, true);
-
-        window.setTimeout(() => {
-            document.documentElement.classList.remove('theme-transitioning');
-        }, 400);
-    });
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-    mediaQuery.addEventListener('change', (e) => {
-        const savedTheme = localStorage.getItem('portfolio-theme');
-        if (!savedTheme) {
-            applyTheme(e.matches ? 'light' : 'dark', false);
-        }
-    });
-
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-    applyTheme(currentTheme, false);
 }
