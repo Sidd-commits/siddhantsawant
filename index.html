@@ -47,9 +47,6 @@
     <!-- Lenis Smooth Scroll Library -->
     <script src="assets/js/lenis.min.js"></script>
 
-    <!-- EmailJS SDK for Secure Verified Delivery -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
     <!-- Script -->
     <script src="assets/js/script.js" defer></script>
 </head>
@@ -943,20 +940,9 @@
 
                 <!-- Right: Contact Form -->
                 <div class="contact-form-panel glass-card">
-                    <div class="form-header-flex">
-                        <h3>Send a Direct Message</h3>
-                        <div class="form-security-badge" title="Guaranteed genuine delivery with 2-step email verification">
-                            <i class="fas fa-shield-halved"></i> <span>Verified Sender Protocol</span>
-                        </div>
-                    </div>
+                    <h3>Send a Direct Message</h3>
 
-                    <form id="contactForm" method="POST" novalidate>
-                        <!-- Honeypot anti-bot trap -->
-                        <div class="hp-trap" aria-hidden="true">
-                            <label for="_gotcha">Leave this field blank</label>
-                            <input type="text" id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off">
-                        </div>
-
+                    <form id="contactForm" action="https://formspree.io/f/xbgrazlg" method="POST" novalidate>
                         <div class="form-group">
                             <label for="name">Your Full Name <span class="required">*</span></label>
                             <div class="input-wrapper">
@@ -981,8 +967,8 @@
                             <label for="subject">Subject</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-heading input-icon"></i>
-                                <input type="text" id="subject" name="subject"
-                                    placeholder="Project collaboration / Opportunity inquiry">
+                                <input type="text" id="subject" name="_subject"
+                                    placeholder="Project collaboration / Internship inquiry">
                             </div>
                         </div>
 
@@ -991,13 +977,13 @@
                             <div class="input-wrapper textarea-wrapper">
                                 <i class="fas fa-message input-icon"></i>
                                 <textarea id="message" name="message" rows="5"
-                                    placeholder="Hi Siddhant, I'd like to discuss..." required></textarea>
+                                    placeholder="Hi Siddhant, I'd like to talk about..." required></textarea>
                             </div>
                             <span class="field-error" id="messageError"></span>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
-                            <i class="fas fa-paper-plane"></i> <span>Verify Email & Send</span>
+                            <i class="fas fa-paper-plane"></i> <span>Send Message</span>
                         </button>
 
                         <div id="formStatus" class="form-status-alert" role="alert" aria-live="polite"></div>
@@ -1054,45 +1040,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Production Email OTP Verification Modal -->
-    <div class="otp-modal-backdrop" id="otpModalBackdrop" aria-hidden="true">
-        <div class="otp-modal glass-card" role="dialog" aria-modal="true" aria-labelledby="otpModalTitle">
-            <button class="otp-close-btn" id="otpCloseBtn" aria-label="Close verification modal">
-                <i class="fas fa-xmark"></i>
-            </button>
-
-            <div class="otp-header">
-                <div class="otp-shield-icon">
-                    <i class="fas fa-shield-halved"></i>
-                </div>
-                <h3 id="otpModalTitle">Verify Sender Identity</h3>
-                <p class="otp-subtitle">To prevent automated spam and guarantee real inquiries, a 6-digit confirmation code was dispatched to <span class="otp-email-highlight" id="otpTargetEmail">user@example.com</span></p>
-            </div>
-
-            <div class="otp-input-group" id="otpInputGroup">
-                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="0" autofocus>
-                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="1">
-                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="2">
-                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="3">
-                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="4">
-                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" data-index="5">
-            </div>
-
-            <div class="otp-status" id="otpStatus" role="alert"></div>
-
-            <div class="otp-actions">
-                <button type="button" class="btn btn-primary btn-block" id="otpVerifyBtn">
-                    <i class="fas fa-circle-check"></i> <span>Confirm & Deliver Message</span>
-                </button>
-            </div>
-
-            <div class="otp-footer">
-                <span class="otp-timer" id="otpTimerText">Expires in <strong id="otpCountdown">10:00</strong></span>
-                <button type="button" class="otp-resend-btn" id="otpResendBtn" disabled>Resend Code</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Back to Top Floating Button -->
     <button class="back-to-top" id="backToTop" aria-label="Back to Top">
