@@ -527,7 +527,7 @@ function initContactForm() {
                 formStatus.className = 'form-status-alert error show';
             }
         } catch (error) {
-            formStatus.textContent = "Network error. Please email me directly at siddhantsawant8222@gmail.com or call +91 7045931324.";
+            formStatus.textContent = "Network error. Please feel free to email me directly at siddhantsawant8222@gmail.com or connect via LinkedIn.";
             formStatus.className = 'form-status-alert error show';
         } finally {
             submitBtn.disabled = false;

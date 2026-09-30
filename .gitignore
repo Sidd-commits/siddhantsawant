@@ -30,8 +30,18 @@ temp/
 
 # Local Environment & Secrets
 .env
-.env.local
-.env.*.local
+.env.*
+*.env
 *.pem
 *.key
 *.cert
+*.pfx
+*.p12
+credentials*
+secrets*
+
+# Internal Project Specifications & Private Drafts
+portfolio_spec.md
+*.spec.md
+*.draft.md
+notes/

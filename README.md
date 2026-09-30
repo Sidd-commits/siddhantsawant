@@ -25,6 +25,11 @@ Designed with a sleek dark-mode glassmorphic aesthetic featuring:
 
 ---
 
+### 🌐 Live Deployment
+- **Website**: [https://siddhantsawant.vercel.app/](https://siddhantsawant.vercel.app/)
+
+---
+
 ### 📁 Project Structure
 
 ```text
@@ -33,12 +38,15 @@ portfolio/
 │   ├── css/
 │   │   └── styles.css          # Core design system & responsive styling
 │   ├── js/
-│   │   └── script.js           # Typewriter, filtering, 3D tilt, and interactive logic
-│   ├── images/                 # Optimized project screenshots, icons, and SVG fallbacks
+│   │   ├── script.js           # Typewriter, filtering, 3D tilt, marquee, and interaction logic
+│   │   └── lenis.min.js        # Smooth inertia scroll engine
+│   ├── images/                 # Optimized project screenshots, icons, and profile imagery
 │   ├── docs/                   # PDF documents (Resume)
 │   └── media/                  # Video walkthroughs and previews
-├── .gitignore                  # Git safety rules
-├── index.html                  # Semantic HTML5 entry point
+├── .gitignore                  # Git safety & privacy rules
+├── index.html                  # Semantic HTML5 entry point & Schema.org JSON-LD
+├── robots.txt                  # Search engine crawl directives
+├── sitemap.xml                 # XML sitemap for Google indexing
 └── README.md                   # Project documentation
 ```
 
