@@ -44,6 +44,7 @@ portfolio/
 │   ├── docs/                   # PDF documents (Resume)
 │   └── media/                  # Video walkthroughs and previews
 ├── .gitignore                  # Git safety & privacy rules
+├── googlef0a269ec6249f631.html # Google Search Console site verification
 ├── index.html                  # Semantic HTML5 entry point & Schema.org JSON-LD
 ├── robots.txt                  # Search engine crawl directives
 ├── sitemap.xml                 # XML sitemap for Google indexing
