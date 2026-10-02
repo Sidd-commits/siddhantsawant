@@ -1661,6 +1661,11 @@ a:hover {
     display: flex;
     align-items: flex-start;
     gap: 12px;
+    line-height: 1.6;
+}
+
+.exp-bullet-points li span {
+    flex: 1;
 }
 
 .exp-bullet-points i {
