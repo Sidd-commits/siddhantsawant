@@ -55,9 +55,11 @@ portfolio/
 
 ### 🛠️ Built With
 
-- **Structure**: Semantic HTML5
-- **Styling**: Modern Vanilla CSS3 *(Custom Properties, Flexbox/Grid, Glassmorphism)*
-- **Interactivity**: Vanilla JavaScript ES6+ *(Dynamic Typewriter, Project Filtering, SVG Gauges, 3D Tilt)*
+- **Structure**: Semantic HTML5 with comprehensive Schema.org JSON-LD structured data for Google Knowledge Graph
+- **Styling**: Modern Vanilla CSS3 *(Design tokens, CSS Grid & Flexbox, Glassmorphic surfaces, Cyber Dark theme)*
+- **Cursor & Aesthetics**: Precision brand-accented hardware SVG cursor and ambient dynamic glow canvases
+- **Interactivity**: Vanilla JavaScript ES6+ *(Dynamic Typewriter, Dual-row Infinite Skills Marquee, Project Filtering, Interactive 3D Card Tilt, Formspree Async Handler)*
+- **Performance**: Lenis smooth inertia scrolling engine, lazy-loading media, optimized vector fallbacks, and 0-dependency lightweight architecture
 
 ---
 

@@ -2350,28 +2350,6 @@ a:hover {
     color: var(--text-secondary);
 }
 
-[data-theme="light"] .custom-cursor-dot {
-    background: radial-gradient(circle, #FFFFFF 20%, var(--accent-primary) 100%);
-    box-shadow: 0 0 10px var(--accent-primary), 0 0 20px rgba(234, 88, 12, 0.7);
-}
-
-[data-theme="light"] .custom-cursor-ring {
-    border-color: rgba(234, 88, 12, 0.65);
-    background: radial-gradient(circle, rgba(234, 88, 12, 0.08) 0%, rgba(37, 99, 235, 0.03) 70%, transparent 100%);
-    box-shadow: 0 0 16px rgba(234, 88, 12, 0.25);
-}
-
-[data-theme="light"] .custom-cursor-ring.cursor-hover-view {
-    background: rgba(255, 255, 255, 0.92);
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 24px rgba(234, 88, 12, 0.35);
-}
-
-[data-theme="light"] .custom-cursor-ring.cursor-hover-view .cursor-label {
-    color: var(--accent-primary);
-    text-shadow: none;
-}
-
 /* Floating Back to Top Button */
 .back-to-top {
     position: fixed;
