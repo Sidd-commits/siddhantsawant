@@ -1614,6 +1614,12 @@ a:hover {
     color: var(--accent-primary);
 }
 
+.exp-role-badge.accent-purple {
+    background: rgba(163, 113, 247, 0.12);
+    border-color: rgba(163, 113, 247, 0.35);
+    color: var(--accent-purple);
+}
+
 .exp-role {
     font-size: 22px;
     font-weight: 700;

@@ -13,15 +13,16 @@ A modern, high-performance personal developer portfolio showcasing full-stack we
 ### 🌐 Overview
 
 Designed with a sleek dark-mode glassmorphic aesthetic featuring:
-- **Featured Projects Showcase**: Production SaaS, Agri-Tech, Medical AI, Cybersecurity simulators, and Secure Web Apps.
+- **Featured Projects Showcase**: Production SaaS, AI Academic Assistants, Agri-Tech, Medical AI, Cybersecurity simulators, and Secure Web Apps.
   - **VyaparFlow**: Deterministic export compliance & logistics SaaS ([Live Demo](https://vyaparflow-smoky.vercel.app/) | [GitHub](https://github.com/Sidd-commits/VyaparFlow))
+  - **ResearchS**: AI-powered academic paper NLP analysis, multi-model summarization, and ROUGE evaluation platform ([GitHub](https://github.com/Sidd-commits/ResearchS))
   - **KrishiSahayata**: Agri-tech platform (Code-o-Fiesta Finalist) ([GitHub](https://github.com/Sidd-commits/KrishiSahayata))
   - **Brain Tumor Detection**: VGG16 transfer learning MRI diagnostic system ([GitHub](https://github.com/Sidd-commits/Brain-Tumor-Detection))
   - **CyberSentinel Suite**: 4-in-1 cybersecurity intrusion & attack simulator ([GitHub](https://github.com/Sidd-commits/CyberSentinel-Suite))
   - **VoteEase**: Secure online voting platform ([GitHub](https://github.com/Sidd-commits/VoteEase))
   - **Library Management**: Database inventory management system ([GitHub](https://github.com/Sidd-commits/Library-Management-System))
 - **Technical Skills Matrix**: Interactive category filtering across Languages, Frameworks, Databases, Tools & Platforms.
-- **Experience & Education**: Academic track record at Mumbai University (VCET) and industry certifications.
+- **Experience & Leadership**: Joint Secretary at Computer Society of India (CSI), VCET, along with industry software engineering internships and academic milestones at Mumbai University (VCET).
 
 ---
 

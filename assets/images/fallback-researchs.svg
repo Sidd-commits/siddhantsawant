@@ -1,0 +1,18 @@
+<svg viewBox="0 0 600 345" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D1117"/>
+      <stop offset="50%" stop-color="#161B22"/>
+      <stop offset="100%" stop-color="#1F2937"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFA500"/>
+      <stop offset="100%" stop-color="#58A6FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="345" fill="url(#bg)"/>
+  <circle cx="300" cy="140" r="48" fill="rgba(88, 166, 255, 0.1)" stroke="url(#accent)" stroke-width="2"/>
+  <text x="300" y="152" font-family="'Segoe UI Emoji', Arial" font-size="38" text-anchor="middle">📑</text>
+  <text x="300" y="225" font-family="'Poppins', sans-serif" font-size="22" font-weight="700" fill="#F0F6FC" text-anchor="middle">ResearchS</text>
+  <text x="300" y="252" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#8B949E" text-anchor="middle">AI-Powered Research Assistant &amp; ROUGE Benchmarks</text>
+</svg>
