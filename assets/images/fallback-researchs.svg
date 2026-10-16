@@ -1,18 +1,25 @@
 <svg viewBox="0 0 600 345" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0D1117"/>
-      <stop offset="50%" stop-color="#161B22"/>
-      <stop offset="100%" stop-color="#1F2937"/>
+      <stop offset="0%" stop-color="#09090F"/>
+      <stop offset="50%" stop-color="#121420"/>
+      <stop offset="100%" stop-color="#1A182E"/>
     </linearGradient>
     <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFA500"/>
-      <stop offset="100%" stop-color="#58A6FF"/>
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#6366F1"/>
     </linearGradient>
   </defs>
   <rect width="600" height="345" fill="url(#bg)"/>
-  <circle cx="300" cy="140" r="48" fill="rgba(88, 166, 255, 0.1)" stroke="url(#accent)" stroke-width="2"/>
-  <text x="300" y="152" font-family="'Segoe UI Emoji', Arial" font-size="38" text-anchor="middle">📑</text>
-  <text x="300" y="225" font-family="'Poppins', sans-serif" font-size="22" font-weight="700" fill="#F0F6FC" text-anchor="middle">ResearchS</text>
-  <text x="300" y="252" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#8B949E" text-anchor="middle">AI-Powered Research Assistant &amp; ROUGE Benchmarks</text>
+  <circle cx="300" cy="135" r="48" fill="rgba(167, 139, 250, 0.12)" stroke="url(#accent)" stroke-width="2"/>
+  <text x="300" y="148" font-family="'Segoe UI Emoji', Arial" font-size="38" text-anchor="middle">📑</text>
+  <text x="300" y="220" font-family="'Plus Jakarta Sans', 'Poppins', sans-serif" font-size="22" font-weight="700" fill="#F8FAFC" text-anchor="middle">ResearchS</text>
+  <text x="300" y="248" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#A5B4FC" text-anchor="middle">AI-Powered Research Assistant &amp; Transformers</text>
+  <!-- 3 mini model indicators -->
+  <rect x="180" y="275" width="70" height="20" rx="4" fill="rgba(59, 130, 246, 0.15)" stroke="rgba(59, 130, 246, 0.4)"/>
+  <text x="215" y="289" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#60A5FA" text-anchor="middle">FLAN-T5</text>
+  <rect x="265" y="275" width="70" height="20" rx="4" fill="rgba(168, 85, 247, 0.2)" stroke="rgba(168, 85, 247, 0.6)"/>
+  <text x="300" y="289" font-family="'Inter', sans-serif" font-size="10" font-weight="700" fill="#C084FC" text-anchor="middle">BART</text>
+  <rect x="350" y="275" width="70" height="20" rx="4" fill="rgba(16, 185, 129, 0.15)" stroke="rgba(16, 185, 129, 0.4)"/>
+  <text x="385" y="289" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#34D399" text-anchor="middle">LongT5</text>
 </svg>

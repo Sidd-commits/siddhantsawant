@@ -17,7 +17,7 @@ Designed with a sleek dark-mode glassmorphic aesthetic featuring:
   - **VyaparFlow**: Deterministic export compliance & logistics SaaS ([Live Demo](https://vyaparflow-smoky.vercel.app/) | [GitHub](https://github.com/Sidd-commits/VyaparFlow))
   - **ResearchS**: AI-powered academic paper NLP analysis, multi-model summarization, and ROUGE evaluation platform ([GitHub](https://github.com/Sidd-commits/ResearchS))
   - **KrishiSahayata**: Agri-tech platform (Code-o-Fiesta Finalist) ([GitHub](https://github.com/Sidd-commits/KrishiSahayata))
-  - **Brain Tumor Detection**: VGG16 transfer learning MRI diagnostic system ([GitHub](https://github.com/Sidd-commits/Brain-Tumor-Detection))
+  - **Brain Tumor Detection**: VGG16 transfer learning MRI diagnostic system ([Live Demo](https://mribraintumordetection.onrender.com/) | [GitHub](https://github.com/Sidd-commits/MRI-Brain-Tumor-Detection-System))
   - **CyberSentinel Suite**: 4-in-1 cybersecurity intrusion & attack simulator ([GitHub](https://github.com/Sidd-commits/CyberSentinel-Suite))
   - **VoteEase**: Secure online voting platform ([GitHub](https://github.com/Sidd-commits/VoteEase))
   - **Library Management**: Database inventory management system ([GitHub](https://github.com/Sidd-commits/Library-Management-System))
